@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.appname }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "ired.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "ired.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "ired.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "ired.serviceAccountName" . }}-sa
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          - name: NODE_RED_ENABLE_PROJECTS
+            value: "true"
+          volumeMounts:
+          - name: {{ .Values.configmap_nodered.name }}
+            mountPath: {{ .Values.configmap_nodered.mountpath }}
+            subPath: {{ .Values.configmap_nodered.subpath }}
+            readOnly: false
+          - name: {{ .Values.nodered_mount.name }}
+            mountPath: {{ .Values.nodered_mount.path }}
+            subPath: {{ .Values.nodered_mount.subpath }}
+            
+           
+          ports:
+            - name: {{ .Values.image.portname }}
+              containerPort: {{ .Values.image.port }}
+              protocol: TCP
+          
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+      - name: {{ .Values.configmap_nodered.name }}
+        configMap:
+          name: {{ .Values.configmap_nodered.name }}
+      - name: {{ .Values.nodered_mount.name }}
+        persistentVolumeClaim:
+            claimName: {{ .Values.nodeflow_storage.pvcname }}    
+      
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

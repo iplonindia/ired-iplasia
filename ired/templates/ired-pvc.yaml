@@ -1,0 +1,13 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.nodeflow_storage.pvcname }}
+  namespace: {{ .Values.namespace }}
+  
+spec:
+  accessModes:
+    - {{ .Values.nodeflow_storage.accessModes }}
+  storageClassName: {{ .Values.nodeflow_storage.storageClassName }}
+  resources:
+    requests:
+      storage: {{ .Values.nodeflow_storage.size }}

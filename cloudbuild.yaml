@@ -1,0 +1,10 @@
+steps:
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args: [ "deploy", "releases", "create" , "${_RELEASE_NAME}-${SHORT_SHA}", "--delivery-pipeline","iplon-deployment", "--region", "us-west2"]
+substitutions:
+  _RELEASE_NAME: ired-iplasia
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  substitution_option: 'ALLOW_LOOSE'

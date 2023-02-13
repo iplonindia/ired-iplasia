@@ -1,0 +1,78 @@
+replicaCount: 1
+
+namespace: ired
+appname: ired-iplasia
+
+image:
+  repository: asia.gcr.io/iplon-india/ired302
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+  port: 1880
+  portname: ired-http
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+configmap_nodered:
+  name: ired-iplasia
+  mountpath: "/usr/lib/node_modules/node-red/settings.js"
+  subpath: "settings.js"
+
+
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+podSecurityContext: {}
+  # fsGroup: 2000
+securityContext:
+   runAsUser: 0
+
+
+
+service:
+  type: ClusterIP
+  port: 80
+
+
+resources:
+  limits:
+    cpu: 85m
+    memory: 550Mi
+  requests:
+    cpu: 50m
+    memory: 300Mi
+
+nodered_mount:
+   name: flowstoragemount
+   path: /data
+   subpath: ""
+
+nodeflow_storage:
+  pvname: ired-iplasia-pv
+  pvcname: ired-iplasia-pvc
+  size: 10Gi
+  mountpath: /mnt/disks/knfs/
+  nfsserver: nfs-master-kube.asia-south1-a.c.iplon-india.internal
+  accessModes: ReadWriteMany
+  storageClassName: premium-rwx
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

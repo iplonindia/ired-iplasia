@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.appname }}-svc
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "ired.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.image.portname }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "ired.selectorLabels" . | nindent 4 }}
