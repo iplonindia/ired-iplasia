@@ -42,6 +42,10 @@ spec:
             mountPath: {{ .Values.configmap_nodered.mountpath }}
             subPath: {{ .Values.configmap_nodered.subpath }}
             readOnly: false
+          - name: {{ .Values.configmap_ddt.name }}
+            mountPath: {{ .Values.configmap_ddt.mountpath }}
+            subPath: {{ .Values.configmap_ddt.subpath }}
+            readOnly: true
           - name: {{ .Values.nodered_mount.name }}
             mountPath: {{ .Values.nodered_mount.path }}
             subPath: {{ .Values.nodered_mount.subpath }}
@@ -58,6 +62,9 @@ spec:
       - name: {{ .Values.configmap_nodered.name }}
         configMap:
           name: {{ .Values.configmap_nodered.name }}
+      - name: {{ .Values.configmap_ddt.name }}
+        configMap:
+          name: {{ .Values.configmap_ddt.name }}          
       - name: {{ .Values.nodered_mount.name }}
         persistentVolumeClaim:
             claimName: {{ .Values.nodeflow_storage.pvcname }}    

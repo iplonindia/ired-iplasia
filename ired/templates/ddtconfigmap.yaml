@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Values.configmap_nodered.name }}
+  name: {{ .Values.configmap_ddt.name }}
   namespace: {{ .Values.namespace }}
 
 data:
   
-{{- range $path, $_ := (.Files.Glob "settingsjs/*") }}
-  {{ trimPrefix "settingsjs/" $path }}: |+
+{{- range $path, $_ := (.Files.Glob "ddt/*") }}
+  {{ trimPrefix "ddt/" $path }}: |+
     {{- tpl ($.Files.Get $path) $ | nindent 4 }}
 {{ end -}}

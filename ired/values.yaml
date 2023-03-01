@@ -20,6 +20,10 @@ configmap_nodered:
   mountpath: "/usr/lib/node_modules/node-red/settings.js"
   subpath: "settings.js"
 
+configmap_ddt:
+  name: ired-iplasia-ddt
+  mountpath: "/home/ddt"
+  subpath: ""
 
 
 serviceAccount:
