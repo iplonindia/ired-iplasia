@@ -66,7 +66,7 @@ nodeflow_storage:
   pvcname: ired-iplasia-pvc
   size: 10Gi
   mountpath: /mnt/nfsdisk/ired/
-  nfsserver: nfs-lulasia.asia-south1-a.c.iplon-india.internal
+  nfsserver: nfs-external-apps.asia-south1-a.c.iplon-india.internal
   accessModes: ReadWriteMany
   storageClassName: premium-rwx
 
